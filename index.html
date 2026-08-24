@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoodGarden 🌱</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #263526;
+  background: #f5f2e8;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 7%;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.logo span {
+  color: #6f9b62;
+  font-weight: 400;
+}
+
+.saved {
+  font-size: 13px;
+  color: #777;
+}
+
+.hero {
+  text-align: center;
+  max-width: 700px;
+  margin: 45px auto 35px;
+  padding: 0 20px;
+}
+
+.eyebrow {
+  color: #6f9b62;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(45px, 8vw, 75px);
+  line-height: .95;
+  margin: 15px 0;
+}
+
+.hero p {
+  color: #727970;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 22px;
+}
+
+.card {
+  background: rgba(255,255,255,.75);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 0 20px 60px rgba(42,58,43,.12);
+}
+
+h2 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+
+.sub {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mood {
+  border: 1px solid transparent;
+  background: #f8f7f0;
+  border-radius: 18px;
+  padding: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mood:hover,
+.mood.active {
+  background: #dceacb;
+  border-color: #b8cca5;
+}
+
+.emoji {
+  font-size: 25px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mood b {
+  display: block;
+}
+
+.mood small {
+  color: #777;
+}
+
+.garden {
+  overflow: hidden;
+}
+
+.garden-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.badge {
+  background: #edf3e7;
+  color: #58784e;
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.scene {
+  height: 310px;
+  border-radius: 22px;
+  margin-top: 15px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(#dcebd5 0 58%, #9ab879 58%);
+}
+
+.scene.night {
+  background: linear-gradient(#202c38 0 58%, #344d39 58%);
+}
+
+.sun {
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: #f6d78b;
+  right: 12%;
+  top: 12%;
+  box-shadow: 0 0 35px #f6d78b;
+}
+
+.night .sun {
+  background: #f3f0c9;
+  box-shadow: 0 0 20px #f3f0c9;
+}
+
+.hill {
+  position: absolute;
+  width: 120%;
+  height: 150px;
+  left: -10%;
+  bottom: 55px;
+  background: #789c63;
+  border-radius: 50% 50% 0 0;
+}
+
+.night .hill {
+  background: #29422f;
+}
+
+.plant {
+  position: absolute;
+  bottom: 40px;
+  animation: sway 3s ease-in-out infinite alternate;
+}
+
+.stem {
+  width: 5px;
+  height: 90px;
+  background: #42683d;
+  margin: auto;
+  border-radius: 8px;
+}
+
+.leaf {
+  width: 28px;
+  height: 14px;
+  background: #4f8b49;
+  border-radius: 100% 0 100% 0;
+  position: absolute;
+}
+
+.l1 {
+  left: -22px;
+  top: 30px;
+  transform: rotate(-25deg);
+}
+
+.l2 {
+  right: -22px;
+  top: 48px;
+  transform: scaleX(-1) rotate(-25deg);
+}
+
+.plant1 {
+  left: 20%;
+}
+
+.plant2 {
+  left: 50%;
+  transform: scale(1.2);
+}
+
+.plant3 {
+  left: 80%;
+}
+
+.flower {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  left: 50%;
+  top: -14px;
+  transform: translateX(-50%);
+}
+
+.petal {
+  width: 13px;
+  height: 13px;
+  background: #f4a4aa;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.p1 { left: 8px; top: 0; }
+.p2 { left: 0; top: 8px; }
+.p3 { right: 0; top: 8px; }
+.p4 { left: 8px; bottom: 0; }
+
+.center {
+  width: 9px;
+  height: 9px;
+  background: #f4d36f;
+  border-radius: 50%;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+.caption {
+  position: absolute;
+  bottom: 12px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+button {
+  font: inherit;
+}
+
+.primary {
+  flex: 1;
+  padding: 13px;
+  border: 0;
+  border-radius: 14px;
+  background: #355b38;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.secondary {
+  padding: 13px;
+  border: 0;
+  border-radius: 14px;
+  background: #edf1e8;
+  cursor: pointer;
+}
+
+.note {
+  margin-top: 18px;
+  padding: 15px;
+  border-radius: 17px;
+  background: #f8f6ed;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  padding: 30px;
+}
+
+@keyframes sway {
+  from { transform: rotate(-2deg); }
+  to { transform: rotate(2deg); }
+}
+
+@media(max-width: 750px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🌱 Mood<span>Garden</span></div>
+  <div class="saved" id="saved">Your garden is waiting</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">A tiny digital garden</div>
+
+  <h1>
+    How are you<br>
+    feeling today?
+  </h1>
+
+  <p>
+    Pick a mood and watch your little garden change.
+    No accounts, no pressure — just a tiny moment for yourself.
+  </p>
+</section>
+
+<div class="container">
+
+<div class="layout">
+
+<!-- MOODS -->
+
+<div class="card">
+
+<h2>Choose your mood</h2>
+
+<p class="sub">
+Your garden grows a little differently each day.
+</p>
+
+<div class="mood-grid">
+
+<button class="mood active" data-mood="happy">
+<span class="emoji">🌱</span>
+<b>Happy</b>
+<small>Bright & blooming</small>
+</button>
+
+<button class="mood" data-mood="calm">
+<span class="emoji">🌿</span>
+<b>Calm</b>
+<small>Slow & peaceful</small>
+</button>
+
+<button class="mood" data-mood="sad">
+<span class="emoji">🌧️</span>
+<b>Sad</b>
+<small>Soft & rainy</small>
+</button>
+
+<button class="mood" data-mood="energetic">
+<span class="emoji">🌻</span>
+<b>Energetic</b>
+<small>Wild & sunny</small>
+</button>
+
+<button class="mood" data-mood="tired">
+<span class="emoji">🌙</span>
+<b>Tired</b>
+<small>Quiet & sleepy</small>
+</button>
+
+<button class="mood" data-mood="loved">
+<span class="emoji">🌸</span>
+<b>Loved</b>
+<small>Warm & blooming</small>
+</button>
+
+</div>
+
+<div class="note" id="note">
+A small reminder: you don't have to feel productive
+to deserve a beautiful garden.
+</div>
+
+</div>
+
+
+<!-- GARDEN -->
+
+<div class="card garden">
+
+<div class="garden-header">
+
+<div>
+
+<h2 id="gardenTitle">
+Your Happy Garden
+</h2>
+
+<p class="sub" id="gardenSub">
+Everything feels a little lighter.
+</p>
+
+</div>
+
+<span class="badge" id="badge">
+🌼 blooming
+</span>
+
+</div>
+
+
+<div class="scene" id="scene">
+
+<div class="sun"></div>
+
+<div class="hill"></div>
+
+
+<div class="plant plant1">
+<div class="stem"></div>
+<div class="leaf l1"></div>
+<div class="leaf l2"></div>
+</div>
+
+
+<div class="plant plant2">
+
+<div class="stem"></div>
+
+<div class="leaf l1"></div>
+
+<div class="leaf l2"></div>
+
+<div class="flower">
+
+<i class="petal p1"></i>
+<i class="petal p2"></i>
+<i class="petal p3"></i>
+<i class="petal p4"></i>
+
+<i class="center"></i>
+
+</div>
+
+</div>
+
+
+<div class="plant plant3">
+<div class="stem"></div>
+<div class="leaf l1"></div>
+<div class="leaf l2"></div>
+</div>
+
+
+<div class="caption" id="caption">
+Today, your garden is blooming with you.
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button class="primary" id="saveBtn">
+🌿 Save today's garden
+</button>
+
+<button class="secondary" id="randomBtn">
+✨ Surprise me
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+Made for tiny feelings, quiet moments, and plants that never judge. 🌱
+</footer>
+
+
+<script>
+
+const moods = {
+
+happy: {
+title:"Your Happy Garden",
+sub:"Everything feels a little lighter.",
+badge:"🌼 blooming",
+caption:"Today, your garden is blooming with you.",
+note:"A small reminder: you don't have to feel productive to deserve a beautiful garden.",
+night:false
+},
+
+calm: {
+title:"Your Calm Garden",
+sub:"Nothing needs to happen right now.",
+badge:"🌿 peaceful",
+caption:"Take a breath. Let the garden be still.",
+note:"You can move slowly and still be moving forward.",
+night:false
+},
+
+sad: {
+title:"Your Rainy Garden",
+sub:"Soft days are allowed too.",
+badge:"🌧️ resting",
+caption:"The rain is watering things you can't see yet.",
+note:"You don't have to turn a hard day into a good one. Just let it pass gently.",
+night:false
+},
+
+energetic: {
+title:"Your Wild Garden",
+sub:"There is electricity in the air.",
+badge:"🌻 growing",
+caption:"Let your energy spill into something beautiful.",
+note:"Use the momentum. Make something, move something, start something.",
+night:false
+},
+
+tired: {
+title:"Your Moon Garden",
+sub:"The world can wait until tomorrow.",
+badge:"🌙 sleepy",
+caption:"Your plants are resting too. Goodnight.",
+note:"Rest isn't an empty space between productive days. It is part of growing.",
+night:true
+},
+
+loved: {
+title:"Your Flower Garden",
+sub:"Warmth makes everything bloom.",
+badge:"🌸 loved",
+caption:"Some gardens grow best when they are cared for.",
+note:"Keep close the people, places and little things that make you feel safe.",
+night:false
+}
+
+};
+
+
+const buttons =
+[...document.querySelectorAll(".mood")];
+
+
+function setMood(name) {
+
+const mood = moods[name];
+
+buttons.forEach(button => {
+
+button.classList.toggle(
+"active",
+button.dataset.mood === name
+);
+
+});
+
+document.getElementById("gardenTitle").textContent =
+mood.title;
+
+document.getElementById("gardenSub").textContent =
+mood.sub;
+
+document.getElementById("badge").textContent =
+mood.badge;
+
+document.getElementById("caption").textContent =
+mood.caption;
+
+document.getElementById("note").textContent =
+mood.note;
+
+document.getElementById("scene")
+.classList.toggle("night", mood.night);
+
+localStorage.setItem("moodgarden", name);
+
+}
+
+
+buttons.forEach(button => {
+
+button.onclick = () => {
+setMood(button.dataset.mood);
+};
+
+});
+
+
+document.getElementById("randomBtn").onclick = () => {
+
+const random =
+buttons[Math.floor(Math.random() * buttons.length)];
+
+setMood(random.dataset.mood);
+
+};
+
+
+document.getElementById("saveBtn").onclick = () => {
+
+const current =
+document.querySelector(".mood.active").dataset.mood;
+
+localStorage.setItem(
+"moodgarden_saved",
+current
+);
+
+document.getElementById("saved").textContent =
+"✓ Today's garden saved";
+
+setTimeout(() => {
+
+document.getElementById("saved").textContent =
+"Your garden is growing";
+
+}, 1600);
+
+};
+
+
+setMood(
+localStorage.getItem("moodgarden") || "happy"
+);
+
+</script>
+
+</body>
+</html>
