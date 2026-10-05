@@ -1,675 +1,2798 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MoodGarden 🌱</title>
+
+<title>MoodGarden 🌿</title>
+
+<meta name="description" content="MoodGarden — a calming digital garden with mood tracking and immersive ASMR ambience.">
 
 <style>
+/* =========================================================
+   MOODGARDEN
+   COMPLETE SINGLE-FILE VERSION
+========================================================= */
+
+:root {
+    --bg1: #dff7e8;
+    --bg2: #b8e6d0;
+    --text: #29483b;
+    --glass: rgba(255,255,255,0.42);
+    --glass-border: rgba(255,255,255,0.55);
+    --shadow: rgba(30,80,60,0.15);
+    --accent: #79b89c;
+    --accent-dark: #477f67;
+    --white: #ffffff;
+}
+
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #263526;
-  background: #f5f2e8;
+    min-height: 100vh;
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--text);
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.8), transparent 25%),
+        radial-gradient(circle at 80% 10%, rgba(255,255,255,.55), transparent 25%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+
+    transition:
+        background 2s ease,
+        color 1s ease;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 22px 7%;
-}
+/* =========================================================
+   ATMOSPHERE
+========================================================= */
 
-.logo {
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.logo span {
-  color: #6f9b62;
-  font-weight: 400;
-}
-
-.saved {
-  font-size: 13px;
-  color: #777;
-}
-
-.hero {
-  text-align: center;
-  max-width: 700px;
-  margin: 45px auto 35px;
-  padding: 0 20px;
-}
-
-.eyebrow {
-  color: #6f9b62;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  font-size: 11px;
-  font-weight: bold;
-}
-
-h1 {
-  font-family: Georgia, serif;
-  font-size: clamp(45px, 8vw, 75px);
-  line-height: .95;
-  margin: 15px 0;
-}
-
-.hero p {
-  color: #727970;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 1.35fr;
-  gap: 22px;
-}
-
-.card {
-  background: rgba(255,255,255,.75);
-  border-radius: 28px;
-  padding: 26px;
-  box-shadow: 0 20px 60px rgba(42,58,43,.12);
-}
-
-h2 {
-  font-family: Georgia, serif;
-  font-size: 28px;
-  margin: 0 0 8px;
-}
-
-.sub {
-  color: #777;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.mood-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.mood {
-  border: 1px solid transparent;
-  background: #f8f7f0;
-  border-radius: 18px;
-  padding: 15px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.mood:hover,
-.mood.active {
-  background: #dceacb;
-  border-color: #b8cca5;
-}
-
-.emoji {
-  font-size: 25px;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.mood b {
-  display: block;
-}
-
-.mood small {
-  color: #777;
-}
-
-.garden {
-  overflow: hidden;
-}
-
-.garden-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.badge {
-  background: #edf3e7;
-  color: #58784e;
-  padding: 7px 11px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.scene {
-  height: 310px;
-  border-radius: 22px;
-  margin-top: 15px;
-  overflow: hidden;
-  position: relative;
-  background: linear-gradient(#dcebd5 0 58%, #9ab879 58%);
-}
-
-.scene.night {
-  background: linear-gradient(#202c38 0 58%, #344d39 58%);
+.atmosphere {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
 }
 
 .sun {
-  position: absolute;
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
-  background: #f6d78b;
-  right: 12%;
-  top: 12%;
-  box-shadow: 0 0 35px #f6d78b;
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+        rgba(255,255,220,1) 0%,
+        rgba(255,236,160,.8) 35%,
+        rgba(255,210,100,.25) 65%,
+        transparent 72%);
+
+    top: 8%;
+    right: 10%;
+
+    filter: blur(2px);
+
+    animation:
+        sunPulse 7s ease-in-out infinite;
 }
 
-.night .sun {
-  background: #f3f0c9;
-  box-shadow: 0 0 20px #f3f0c9;
+@keyframes sunPulse {
+    0%,100% {
+        transform: scale(1);
+        opacity: .8;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
 }
 
-.hill {
-  position: absolute;
-  width: 120%;
-  height: 150px;
-  left: -10%;
-  bottom: 55px;
-  background: #789c63;
-  border-radius: 50% 50% 0 0;
+.moon {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+
+    background: #fffbe3;
+
+    box-shadow:
+        0 0 35px rgba(255,255,220,.9),
+        0 0 100px rgba(255,255,220,.35);
+
+    top: 8%;
+    right: 13%;
+
+    opacity: 0;
+
+    transition: opacity 2s ease;
 }
 
-.night .hill {
-  background: #29422f;
+body.night .moon {
+    opacity: 1;
 }
 
-.plant {
-  position: absolute;
-  bottom: 40px;
-  animation: sway 3s ease-in-out infinite alternate;
+body.night .sun {
+    opacity: 0;
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+.particle {
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.75);
+
+    animation:
+        floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+
+    0% {
+        transform:
+            translate3d(0,110vh,0)
+            scale(.4);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: .7;
+    }
+
+    85% {
+        opacity: .7;
+    }
+
+    100% {
+        transform:
+            translate3d(60px,-20vh,0)
+            scale(1.2);
+
+        opacity: 0;
+    }
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+nav {
+    position: relative;
+    z-index: 20;
+
+    width: min(1180px, calc(100% - 30px));
+
+    margin: 18px auto 0;
+
+    padding: 14px 20px;
+
+    border:
+        1px solid var(--glass-border);
+
+    border-radius: 25px;
+
+    background:
+        rgba(255,255,255,.34);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 40px var(--shadow);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+
+    color: var(--accent-dark);
+
+    letter-spacing: 1px;
+}
+
+.nav-right {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    border: none;
+
+    padding: 10px 15px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,255,255,.45);
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    transition: .3s;
+
+    font-family: inherit;
+}
+
+.nav-btn:hover {
+    transform: translateY(-2px);
+
+    background:
+        rgba(255,255,255,.75);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    position: relative;
+    z-index: 5;
+
+    width: min(1100px, calc(100% - 30px));
+
+    margin: 65px auto 30px;
+
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 8vw, 90px);
+
+    line-height: 1;
+
+    color: #315c49;
+
+    text-shadow:
+        0 5px 25px rgba(40,90,65,.18);
+
+    animation:
+        titleFloat 5s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-7px);
+    }
+}
+
+.hero p {
+    max-width: 650px;
+
+    margin: 20px auto;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    opacity: .8;
+}
+
+.status-pill {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 15px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.45);
+
+    backdrop-filter: blur(12px);
+
+    font-size: 13px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #71b98f;
+
+    box-shadow:
+        0 0 12px #71b98f;
+
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    50% {
+        transform: scale(1.5);
+        opacity: .5;
+    }
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.container {
+    position: relative;
+    z-index: 5;
+
+    width: min(1100px, calc(100% - 30px));
+
+    margin: auto;
+}
+
+/* =========================================================
+   GLASS CARD
+========================================================= */
+
+.glass {
+    background:
+        var(--glass);
+
+    border:
+        1px solid var(--glass-border);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 20px 60px var(--shadow);
+}
+
+/* =========================================================
+   MOOD SELECTOR
+========================================================= */
+
+.mood-card {
+    padding: 30px;
+
+    text-align: center;
+}
+
+.section-title {
+    font-size: 27px;
+
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    opacity: .65;
+
+    margin-bottom: 25px;
+}
+
+.moods {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 15px;
+}
+
+.mood {
+    border: none;
+
+    min-height: 115px;
+
+    border-radius: 24px;
+
+    background:
+        rgba(255,255,255,.42);
+
+    cursor: pointer;
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    transition:
+        transform .3s,
+        background .3s,
+        box-shadow .3s;
+}
+
+.mood:hover {
+    transform:
+        translateY(-8px)
+        scale(1.03);
+
+    background:
+        rgba(255,255,255,.72);
+
+    box-shadow:
+        0 15px 35px rgba(50,100,75,.15);
+}
+
+.mood.active {
+    transform:
+        translateY(-5px);
+
+    background:
+        rgba(255,255,255,.8);
+
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.6),
+        0 15px 40px rgba(50,100,75,.2);
+}
+
+.mood-icon {
+    display: block;
+
+    font-size: 42px;
+
+    margin-bottom: 8px;
+}
+
+.mood-name {
+    font-size: 15px;
+}
+
+/* =========================================================
+   GARDEN
+========================================================= */
+
+.garden-card {
+    position: relative;
+
+    height: 470px;
+
+    margin-top: 25px;
+
+    overflow: hidden;
+
+    border-radius: 35px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(180,225,210,.35),
+            rgba(70,130,95,.5)
+        );
+
+    box-shadow:
+        0 25px 70px rgba(40,90,60,.2);
+}
+
+.garden-sky {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(170,220,240,.7),
+            rgba(220,245,220,.1) 70%
+        );
+
+    transition: background 2s ease;
+}
+
+body.night .garden-sky {
+    background:
+        linear-gradient(
+            180deg,
+            #14283c,
+            #284b50 60%,
+            #315a47
+        );
+}
+
+/* Mountains */
+
+.mountain {
+    position: absolute;
+
+    bottom: 145px;
+
+    width: 500px;
+
+    height: 230px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #699d84,
+            #3e715c
+        );
+
+    clip-path:
+        polygon(
+            0 100%,
+            50% 0,
+            100% 100%
+        );
+
+    opacity: .65;
+}
+
+.mountain.one {
+    left: -80px;
+}
+
+.mountain.two {
+    right: -100px;
+
+    transform:
+        scale(.8);
+}
+
+/* Ground */
+
+.ground {
+    position: absolute;
+
+    bottom: -30px;
+
+    left: -5%;
+
+    width: 110%;
+
+    height: 190px;
+
+    border-radius:
+        50% 50% 0 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #5f996e,
+            #356c4d
+        );
+
+    box-shadow:
+        inset 0 20px 30px rgba(255,255,255,.1);
+}
+
+/* =========================================================
+   FLOWERS
+========================================================= */
+
+.flower {
+    position: absolute;
+
+    bottom: 100px;
+
+    width: 50px;
+
+    height: 130px;
+
+    transform-origin:
+        bottom center;
+
+    animation:
+        flowerSway 4s ease-in-out infinite;
+}
+
+.flower:nth-child(2n) {
+    animation-delay: -1s;
+}
+
+.flower:nth-child(3n) {
+    animation-delay: -2s;
+}
+
+@keyframes flowerSway {
+
+    0%,100% {
+        transform:
+            rotate(-2deg);
+    }
+
+    50% {
+        transform:
+            rotate(4deg);
+    }
 }
 
 .stem {
-  width: 5px;
-  height: 90px;
-  background: #42683d;
-  margin: auto;
-  border-radius: 8px;
+    position: absolute;
+
+    bottom: 0;
+
+    left: 50%;
+
+    width: 5px;
+
+    height: 90px;
+
+    background:
+        #3d7954;
+
+    border-radius: 10px;
 }
 
 .leaf {
-  width: 28px;
-  height: 14px;
-  background: #4f8b49;
-  border-radius: 100% 0 100% 0;
-  position: absolute;
+    position: absolute;
+
+    width: 28px;
+
+    height: 13px;
+
+    background:
+        #4f9365;
+
+    border-radius:
+        100% 0 100% 0;
 }
 
-.l1 {
-  left: -22px;
-  top: 30px;
-  transform: rotate(-25deg);
+.leaf.left {
+    left: 0;
+
+    bottom: 35px;
+
+    transform:
+        rotate(20deg);
 }
 
-.l2 {
-  right: -22px;
-  top: 48px;
-  transform: scaleX(-1) rotate(-25deg);
+.leaf.right {
+    right: 0;
+
+    bottom: 55px;
+
+    transform:
+        rotate(-20deg);
 }
 
-.plant1 {
-  left: 20%;
-}
+.bloom {
+    position: absolute;
 
-.plant2 {
-  left: 50%;
-  transform: scale(1.2);
-}
+    top: 0;
 
-.plant3 {
-  left: 80%;
-}
+    left: 50%;
 
-.flower {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  left: 50%;
-  top: -14px;
-  transform: translateX(-50%);
+    transform:
+        translateX(-50%);
+
+    width: 48px;
+
+    height: 48px;
 }
 
 .petal {
-  width: 13px;
-  height: 13px;
-  background: #f4a4aa;
-  border-radius: 50%;
-  position: absolute;
+    position: absolute;
+
+    width: 25px;
+
+    height: 32px;
+
+    border-radius:
+        50% 50% 45% 45%;
+
+    background:
+        var(--flower-color, #ffb6d5);
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.1);
 }
 
-.p1 { left: 8px; top: 0; }
-.p2 { left: 0; top: 8px; }
-.p3 { right: 0; top: 8px; }
-.p4 { left: 8px; bottom: 0; }
+.petal:nth-child(1) {
+    top: 0;
+    left: 12px;
+}
+
+.petal:nth-child(2) {
+    top: 10px;
+    left: 0;
+
+    transform:
+        rotate(-65deg);
+}
+
+.petal:nth-child(3) {
+    top: 10px;
+    right: 0;
+
+    transform:
+        rotate(65deg);
+}
+
+.petal:nth-child(4) {
+    top: 22px;
+    left: 7px;
+
+    transform:
+        rotate(-25deg);
+}
+
+.petal:nth-child(5) {
+    top: 22px;
+    right: 7px;
+
+    transform:
+        rotate(25deg);
+}
 
 .center {
-  width: 9px;
-  height: 9px;
-  background: #f4d36f;
-  border-radius: 50%;
-  position: absolute;
-  left: 10px;
-  top: 10px;
+    position: absolute;
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 50%;
+
+    background:
+        #ffd96a;
+
+    top: 18px;
+    left: 17px;
+
+    z-index: 2;
 }
 
-.caption {
-  position: absolute;
-  bottom: 12px;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 12px;
+/* =========================================================
+   FIREFLIES
+========================================================= */
+
+.firefly {
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background:
+        #fff3a4;
+
+    box-shadow:
+        0 0 15px 5px rgba(255,236,125,.65);
+
+    animation:
+        fireflyMove 7s ease-in-out infinite;
+
+    opacity: .8;
 }
 
-.controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 16px;
+@keyframes fireflyMove {
+
+    0% {
+        transform:
+            translate(0,0);
+
+        opacity: .1;
+    }
+
+    25% {
+        transform:
+            translate(70px,-50px);
+
+        opacity: 1;
+    }
+
+    50% {
+        transform:
+            translate(-40px,-100px);
+
+        opacity: .3;
+    }
+
+    75% {
+        transform:
+            translate(100px,-150px);
+
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(0,0);
+
+        opacity: .1;
+    }
 }
 
-button {
-  font: inherit;
+/* =========================================================
+   BUTTERFLIES
+========================================================= */
+
+.butterfly {
+    position: absolute;
+
+    font-size: 27px;
+
+    animation:
+        butterflyFly 10s ease-in-out infinite;
 }
 
-.primary {
-  flex: 1;
-  padding: 13px;
-  border: 0;
-  border-radius: 14px;
-  background: #355b38;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+@keyframes butterflyFly {
+
+    0% {
+        transform:
+            translate(0,0)
+            rotate(0deg);
+    }
+
+    25% {
+        transform:
+            translate(100px,-60px)
+            rotate(15deg);
+    }
+
+    50% {
+        transform:
+            translate(200px,20px)
+            rotate(-10deg);
+    }
+
+    75% {
+        transform:
+            translate(100px,80px)
+            rotate(15deg);
+    }
+
+    100% {
+        transform:
+            translate(0,0)
+            rotate(0deg);
+    }
 }
 
-.secondary {
-  padding: 13px;
-  border: 0;
-  border-radius: 14px;
-  background: #edf1e8;
-  cursor: pointer;
+/* =========================================================
+   ASMR
+========================================================= */
+
+.asmr {
+    margin-top: 25px;
+
+    padding: 30px;
 }
 
-.note {
-  margin-top: 18px;
-  padding: 15px;
-  border-radius: 17px;
-  background: #f8f6ed;
-  color: #777;
-  font-size: 13px;
-  line-height: 1.5;
+.asmr-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
 }
+
+.sound-status {
+    padding: 8px 13px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.5);
+
+    font-size: 13px;
+}
+
+.sound-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 14px;
+}
+
+.sound {
+    padding: 20px 12px;
+
+    border: none;
+
+    border-radius: 22px;
+
+    background:
+        rgba(255,255,255,.4);
+
+    color: var(--text);
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition: .3s;
+}
+
+.sound:hover {
+    transform:
+        translateY(-5px);
+
+    background:
+        rgba(255,255,255,.7);
+}
+
+.sound.active {
+    background:
+        rgba(255,255,255,.85);
+
+    box-shadow:
+        0 10px 30px rgba(40,90,60,.15);
+}
+
+.sound-icon {
+    display: block;
+
+    font-size: 30px;
+
+    margin-bottom: 8px;
+}
+
+.volume-row {
+    margin-top: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+.volume-row input {
+    flex: 1;
+}
+
+input[type="range"] {
+    accent-color: #5f9974;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   BREATHING
+========================================================= */
+
+.breathe-card {
+    margin-top: 25px;
+
+    padding: 35px;
+
+    text-align: center;
+}
+
+.breath-circle {
+    width: 150px;
+
+    height: 150px;
+
+    margin: 25px auto;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.75),
+            rgba(150,210,180,.35)
+        );
+
+    box-shadow:
+        0 0 50px rgba(120,190,150,.3);
+
+    font-size: 17px;
+
+    transition:
+        transform 4s ease-in-out;
+}
+
+.breath-circle.breathing {
+    animation:
+        breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+
+    0%,100% {
+        transform:
+            scale(.8);
+    }
+
+    50% {
+        transform:
+            scale(1.25);
+    }
+}
+
+.breath-text {
+    opacity: .7;
+
+    min-height: 25px;
+}
+
+.primary-btn {
+    border: none;
+
+    padding: 13px 24px;
+
+    border-radius: 25px;
+
+    background:
+        #5f9974;
+
+    color: white;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+    box-shadow:
+        0 8px 25px rgba(50,100,70,.2);
+}
+
+.primary-btn:hover {
+    transform:
+        translateY(-2px);
+
+    background:
+        #4c8662;
+}
+
+/* =========================================================
+   MOOD MESSAGE
+========================================================= */
+
+.message-card {
+    margin-top: 25px;
+
+    padding: 35px;
+
+    text-align: center;
+}
+
+.message {
+    font-size: 22px;
+
+    line-height: 1.7;
+
+    max-width: 750px;
+
+    margin: auto;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
 
 footer {
-  text-align: center;
-  color: #999;
-  font-size: 12px;
-  padding: 30px;
+    position: relative;
+
+    z-index: 5;
+
+    text-align: center;
+
+    padding: 45px 20px;
+
+    opacity: .65;
+
+    font-size: 14px;
 }
 
-@keyframes sway {
-  from { transform: rotate(-2deg); }
-  to { transform: rotate(2deg); }
+/* =========================================================
+   RAIN
+========================================================= */
+
+.rain-drop {
+    position: fixed;
+
+    top: -30px;
+
+    width: 1px;
+
+    height: 20px;
+
+    background:
+        linear-gradient(
+            transparent,
+            rgba(180,220,255,.7)
+        );
+
+    animation:
+        rainFall linear forwards;
+
+    pointer-events: none;
+
+    z-index: 30;
 }
 
-@media(max-width: 750px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
+@keyframes rainFall {
+
+    to {
+        transform:
+            translateY(110vh)
+            translateX(-50px);
+    }
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+    position: fixed;
+
+    bottom: 25px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%)
+        translateY(100px);
+
+    padding: 13px 20px;
+
+    border-radius: 25px;
+
+    background:
+        rgba(30,60,45,.85);
+
+    color: white;
+
+    z-index: 100;
+
+    opacity: 0;
+
+    transition: .4s;
+
+    backdrop-filter: blur(15px);
+}
+
+.toast.show {
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+    opacity: 1;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:800px) {
+
+    .moods {
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .sound-grid {
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+    .garden-card {
+        height: 420px;
+    }
+
+    .asmr-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+}
+
+@media(max-width:550px) {
+
+    nav {
+        margin-top: 10px;
+    }
+
+    .nav-right {
+        display: none;
+    }
+
+    .hero {
+        margin-top: 45px;
+    }
+
+    .hero h1 {
+        font-size: 55px;
+    }
+
+    .mood-card,
+    .asmr,
+    .breathe-card,
+    .message-card {
+        padding: 22px;
+    }
+
+    .moods {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .sound-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .garden-card {
+        height: 390px;
+    }
+
+    .mountain {
+        bottom: 130px;
+    }
+
+    .message {
+        font-size: 19px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">🌱 Mood<span>Garden</span></div>
-  <div class="saved" id="saved">Your garden is waiting</div>
-</header>
+<!-- =======================================================
+     ATMOSPHERE
+======================================================= -->
+
+<div class="atmosphere">
+
+    <div class="sun"></div>
+
+    <div class="moon"></div>
+
+</div>
+
+<!-- =======================================================
+     NAV
+======================================================= -->
+
+<nav>
+
+    <div class="logo">
+        🌿 MoodGarden
+    </div>
+
+    <div class="nav-right">
+
+        <button class="nav-btn" onclick="scrollToSection('garden')">
+            🌸 Garden
+        </button>
+
+        <button class="nav-btn" onclick="scrollToSection('asmr')">
+            🎧 ASMR
+        </button>
+
+        <button class="nav-btn" onclick="toggleNight()">
+            🌙 Night
+        </button>
+
+    </div>
+
+</nav>
+
+<!-- =======================================================
+     HERO
+======================================================= -->
 
 <section class="hero">
-  <div class="eyebrow">A tiny digital garden</div>
 
-  <h1>
-    How are you<br>
-    feeling today?
-  </h1>
+    <div class="status-pill">
 
-  <p>
-    Pick a mood and watch your little garden change.
-    No accounts, no pressure — just a tiny moment for yourself.
-  </p>
+        <span class="status-dot"></span>
+
+        Your little peaceful corner
+
+    </div>
+
+    <h1>
+        MoodGarden
+    </h1>
+
+    <p>
+        A quiet digital garden where your feelings become
+        colors, flowers, sounds and little moments of peace.
+    </p>
+
 </section>
 
-<div class="container">
+<main class="container">
 
-<div class="layout">
+<!-- =======================================================
+     MOOD SELECTOR
+======================================================= -->
 
-<!-- MOODS -->
+<section class="glass mood-card">
 
-<div class="card">
+    <h2 class="section-title">
+        How are you feeling?
+    </h2>
 
-<h2>Choose your mood</h2>
+    <p class="section-subtitle">
+        Choose a feeling and watch your garden respond.
+    </p>
 
-<p class="sub">
-Your garden grows a little differently each day.
-</p>
+    <div class="moods">
 
-<div class="mood-grid">
+        <button
+            class="mood"
+            data-mood="happy"
+            onclick="selectMood('happy')">
 
-<button class="mood active" data-mood="happy">
-<span class="emoji">🌱</span>
-<b>Happy</b>
-<small>Bright & blooming</small>
-</button>
+            <span class="mood-icon">🌞</span>
 
-<button class="mood" data-mood="calm">
-<span class="emoji">🌿</span>
-<b>Calm</b>
-<small>Slow & peaceful</small>
-</button>
+            <span class="mood-name">
+                Happy
+            </span>
 
-<button class="mood" data-mood="sad">
-<span class="emoji">🌧️</span>
-<b>Sad</b>
-<small>Soft & rainy</small>
-</button>
+        </button>
 
-<button class="mood" data-mood="energetic">
-<span class="emoji">🌻</span>
-<b>Energetic</b>
-<small>Wild & sunny</small>
-</button>
+        <button
+            class="mood"
+            data-mood="calm"
+            onclick="selectMood('calm')">
 
-<button class="mood" data-mood="tired">
-<span class="emoji">🌙</span>
-<b>Tired</b>
-<small>Quiet & sleepy</small>
-</button>
+            <span class="mood-icon">🌿</span>
 
-<button class="mood" data-mood="loved">
-<span class="emoji">🌸</span>
-<b>Loved</b>
-<small>Warm & blooming</small>
-</button>
+            <span class="mood-name">
+                Calm
+            </span>
 
-</div>
+        </button>
 
-<div class="note" id="note">
-A small reminder: you don't have to feel productive
-to deserve a beautiful garden.
-</div>
+        <button
+            class="mood"
+            data-mood="sad"
+            onclick="selectMood('sad')">
 
-</div>
+            <span class="mood-icon">🌧️</span>
 
+            <span class="mood-name">
+                Sad
+            </span>
 
-<!-- GARDEN -->
+        </button>
 
-<div class="card garden">
+        <button
+            class="mood"
+            data-mood="anxious"
+            onclick="selectMood('anxious')">
 
-<div class="garden-header">
+            <span class="mood-icon">🫧</span>
 
-<div>
+            <span class="mood-name">
+                Anxious
+            </span>
 
-<h2 id="gardenTitle">
-Your Happy Garden
-</h2>
+        </button>
 
-<p class="sub" id="gardenSub">
-Everything feels a little lighter.
-</p>
+        <button
+            class="mood"
+            data-mood="energetic"
+            onclick="selectMood('energetic')">
 
-</div>
+            <span class="mood-icon">✨</span>
 
-<span class="badge" id="badge">
-🌼 blooming
-</span>
+            <span class="mood-name">
+                Energetic
+            </span>
 
-</div>
+        </button>
 
+    </div>
 
-<div class="scene" id="scene">
+</section>
 
-<div class="sun"></div>
+<!-- =======================================================
+     GARDEN
+======================================================= -->
 
-<div class="hill"></div>
+<section
+    class="garden-card"
+    id="garden">
 
+    <div class="garden-sky"></div>
 
-<div class="plant plant1">
-<div class="stem"></div>
-<div class="leaf l1"></div>
-<div class="leaf l2"></div>
-</div>
+    <div class="mountain one"></div>
 
+    <div class="mountain two"></div>
 
-<div class="plant plant2">
+    <!-- Flowers -->
 
-<div class="stem"></div>
+    <div
+        class="flower"
+        style="left:8%; --flower-color:#ffb4ce;">
 
-<div class="leaf l1"></div>
+        <div class="bloom">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="center"></div>
+        </div>
 
-<div class="leaf l2"></div>
+        <div class="stem"></div>
 
-<div class="flower">
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
 
-<i class="petal p1"></i>
-<i class="petal p2"></i>
-<i class="petal p3"></i>
-<i class="petal p4"></i>
+    </div>
 
-<i class="center"></i>
+    <div
+        class="flower"
+        style="left:22%; --flower-color:#d6b4ff;">
 
-</div>
+        <div class="bloom">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="center"></div>
+        </div>
 
-</div>
+        <div class="stem"></div>
 
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
 
-<div class="plant plant3">
-<div class="stem"></div>
-<div class="leaf l1"></div>
-<div class="leaf l2"></div>
-</div>
+    </div>
 
+    <div
+        class="flower"
+        style="left:42%; --flower-color:#fff0a6;">
 
-<div class="caption" id="caption">
-Today, your garden is blooming with you.
-</div>
+        <div class="bloom">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="center"></div>
+        </div>
 
-</div>
+        <div class="stem"></div>
 
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
 
-<div class="controls">
+    </div>
 
-<button class="primary" id="saveBtn">
-🌿 Save today's garden
-</button>
+    <div
+        class="flower"
+        style="left:63%; --flower-color:#ffbd9e;">
 
-<button class="secondary" id="randomBtn">
-✨ Surprise me
-</button>
+        <div class="bloom">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="center"></div>
+        </div>
 
-</div>
+        <div class="stem"></div>
 
-</div>
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
 
-</div>
+    </div>
 
-</div>
+    <div
+        class="flower"
+        style="left:82%; --flower-color:#b9d8ff;">
+
+        <div class="bloom">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="center"></div>
+        </div>
+
+        <div class="stem"></div>
+
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
+
+    </div>
+
+    <!-- Butterflies -->
+
+    <div
+        class="butterfly"
+        style="left:15%; top:25%;">
+        🦋
+    </div>
+
+    <div
+        class="butterfly"
+        style="right:15%; top:35%; animation-delay:-4s;">
+        🦋
+    </div>
+
+    <!-- Fireflies -->
+
+    <div class="firefly" style="left:20%; top:35%;"></div>
+
+    <div class="firefly" style="left:35%; top:25%; animation-delay:-2s;"></div>
+
+    <div class="firefly" style="left:55%; top:40%; animation-delay:-4s;"></div>
+
+    <div class="firefly" style="left:72%; top:28%; animation-delay:-1s;"></div>
+
+    <div class="firefly" style="left:87%; top:45%; animation-delay:-5s;"></div>
+
+    <div class="ground"></div>
+
+</section>
+
+<!-- =======================================================
+     MESSAGE
+======================================================= -->
+
+<section class="glass message-card">
+
+    <p
+        class="message"
+        id="moodMessage">
+
+        🌱 Choose your mood and let your garden grow with you.
+
+    </p>
+
+</section>
+
+<!-- =======================================================
+     ASMR
+======================================================= -->
+
+<section
+    class="glass asmr"
+    id="asmr">
+
+    <div class="asmr-header">
+
+        <div>
+
+            <h2 class="section-title">
+                🎧 ASMR Garden
+            </h2>
+
+            <p class="section-subtitle">
+                Close your eyes. Breathe slowly. Let the garden surround you.
+            </p>
+
+        </div>
+
+        <div
+            class="sound-status"
+            id="soundStatus">
+
+            🔇 Sounds off
+
+        </div>
+
+    </div>
+
+    <div class="sound-grid">
+
+        <button
+            class="sound"
+            data-sound="rain"
+            onclick="toggleSound('rain', this)">
+
+            <span class="sound-icon">
+                🌧️
+            </span>
+
+            Rain
+
+        </button>
+
+        <button
+            class="sound"
+            data-sound="water"
+            onclick="toggleSound('water', this)">
+
+            <span class="sound-icon">
+                💧
+            </span>
+
+            Water
+
+        </button>
+
+        <button
+            class="sound"
+            data-sound="wind"
+            onclick="toggleSound('wind', this)">
+
+            <span class="sound-icon">
+                🌬️
+            </span>
+
+            Wind
+
+        </button>
+
+        <button
+            class="sound"
+            data-sound="birds"
+            onclick="toggleSound('birds', this)">
+
+            <span class="sound-icon">
+                🐦
+            </span>
+
+            Birds
+
+        </button>
+
+        <button
+            class="sound"
+            data-sound="fire"
+            onclick="toggleSound('fire', this)">
+
+            <span class="sound-icon">
+                🔥
+            </span>
+
+            Fireplace
+
+        </button>
+
+    </div>
+
+    <div class="volume-row">
+
+        <span>🔉</span>
+
+        <input
+            id="masterVolume"
+            type="range"
+            min="0"
+            max="1"
+            value=".35"
+            step=".01"
+            oninput="setMasterVolume(this.value)">
+
+        <span>🔊</span>
+
+    </div>
+
+</section>
+
+<!-- =======================================================
+     BREATHING
+======================================================= -->
+
+<section class="glass breathe-card">
+
+    <h2 class="section-title">
+        🫧 Breathe with the Garden
+    </h2>
+
+    <p class="section-subtitle">
+        Follow the circle. Slowly breathe in, then breathe out.
+    </p>
+
+    <div
+        class="breath-circle"
+        id="breathCircle">
+
+        Breathe
+
+    </div>
+
+    <p
+        class="breath-text"
+        id="breathText">
+
+        Whenever you're ready...
+
+    </p>
+
+    <br>
+
+    <button
+        class="primary-btn"
+        onclick="startBreathing()">
+
+        Begin breathing
+
+    </button>
+
+</section>
+
+</main>
 
 <footer>
-Made for tiny feelings, quiet moments, and plants that never judge. 🌱
+
+    🌿 MoodGarden
+
+    <br><br>
+
+    Made for slow moments, soft thoughts and peaceful minds.
+
 </footer>
 
+<div
+    class="toast"
+    id="toast">
+</div>
 
 <script>
 
-const moods = {
+/* =========================================================
+   MOOD SYSTEM
+========================================================= */
 
-happy: {
-title:"Your Happy Garden",
-sub:"Everything feels a little lighter.",
-badge:"🌼 blooming",
-caption:"Today, your garden is blooming with you.",
-note:"A small reminder: you don't have to feel productive to deserve a beautiful garden.",
-night:false
-},
+const moodData = {
 
-calm: {
-title:"Your Calm Garden",
-sub:"Nothing needs to happen right now.",
-badge:"🌿 peaceful",
-caption:"Take a breath. Let the garden be still.",
-note:"You can move slowly and still be moving forward.",
-night:false
-},
+    happy: {
 
-sad: {
-title:"Your Rainy Garden",
-sub:"Soft days are allowed too.",
-badge:"🌧️ resting",
-caption:"The rain is watering things you can't see yet.",
-note:"You don't have to turn a hard day into a good one. Just let it pass gently.",
-night:false
-},
+        bg1: "#fff4ce",
+        bg2: "#bce8c7",
 
-energetic: {
-title:"Your Wild Garden",
-sub:"There is electricity in the air.",
-badge:"🌻 growing",
-caption:"Let your energy spill into something beautiful.",
-note:"Use the momentum. Make something, move something, start something.",
-night:false
-},
+        message:
+            "🌞 Your happiness is blooming. Let yourself enjoy this little moment.",
 
-tired: {
-title:"Your Moon Garden",
-sub:"The world can wait until tomorrow.",
-badge:"🌙 sleepy",
-caption:"Your plants are resting too. Goodnight.",
-note:"Rest isn't an empty space between productive days. It is part of growing.",
-night:true
-},
+        sounds:
+            ["birds", "water"]
 
-loved: {
-title:"Your Flower Garden",
-sub:"Warmth makes everything bloom.",
-badge:"🌸 loved",
-caption:"Some gardens grow best when they are cared for.",
-note:"Keep close the people, places and little things that make you feel safe.",
-night:false
+    },
+
+    calm: {
+
+        bg1: "#dff7e8",
+        bg2: "#b8e6d0",
+
+        message:
+            "🌿 There is nowhere you need to rush. Stay here for a while.",
+
+        sounds:
+            ["water", "wind"]
+
+    },
+
+    sad: {
+
+        bg1: "#c8d6e5",
+        bg2: "#7897a9",
+
+        message:
+            "🌧️ It's okay to feel heavy sometimes. You don't have to fix everything today.",
+
+        sounds:
+            ["rain"]
+
+    },
+
+    anxious: {
+
+        bg1: "#d9e8e0",
+        bg2: "#a9c7bb",
+
+        message:
+            "🫧 Take one slow breath. You are here. This moment is enough.",
+
+        sounds:
+            ["rain", "water"]
+
+    },
+
+    energetic: {
+
+        bg1: "#ffe7ad",
+        bg2: "#9ed8b1",
+
+        message:
+            "✨ Your energy is glowing. Let it move through the garden.",
+
+        sounds:
+            ["birds", "wind"]
+
+    }
+
+};
+
+function selectMood(mood) {
+
+    const data = moodData[mood];
+
+    document.documentElement.style.setProperty(
+        "--bg1",
+        data.bg1
+    );
+
+    document.documentElement.style.setProperty(
+        "--bg2",
+        data.bg2
+    );
+
+    document.querySelectorAll(".mood")
+        .forEach(button => {
+
+            button.classList.remove("active");
+
+        });
+
+    const selected =
+        document.querySelector(
+            `[data-mood="${mood}"]`
+        );
+
+    if (selected) {
+
+        selected.classList.add("active");
+
+    }
+
+    document.getElementById(
+        "moodMessage"
+    ).textContent = data.message;
+
+    createMoodEffect(mood);
+
+    localStorage.setItem(
+        "moodgarden-last-mood",
+        mood
+    );
+
+    showToast(
+        "Your garden is responding 🌿"
+    );
 }
 
-};
+/* =========================================================
+   MOOD EFFECTS
+========================================================= */
 
+function createMoodEffect(mood) {
 
-const buttons =
-[...document.querySelectorAll(".mood")];
+    if (mood === "sad") {
 
+        startRain();
 
-function setMood(name) {
+    } else {
 
-const mood = moods[name];
+        stopRain();
 
-buttons.forEach(button => {
+    }
 
-button.classList.toggle(
-"active",
-button.dataset.mood === name
-);
+    if (
+        mood === "calm" ||
+        mood === "anxious"
+    ) {
 
-});
+        document
+            .getElementById("breathCircle")
+            .classList.add("breathing");
 
-document.getElementById("gardenTitle").textContent =
-mood.title;
-
-document.getElementById("gardenSub").textContent =
-mood.sub;
-
-document.getElementById("badge").textContent =
-mood.badge;
-
-document.getElementById("caption").textContent =
-mood.caption;
-
-document.getElementById("note").textContent =
-mood.note;
-
-document.getElementById("scene")
-.classList.toggle("night", mood.night);
-
-localStorage.setItem("moodgarden", name);
+    }
 
 }
 
+/* =========================================================
+   NIGHT MODE
+========================================================= */
 
-buttons.forEach(button => {
+function toggleNight() {
 
-button.onclick = () => {
-setMood(button.dataset.mood);
-};
+    document.body.classList.toggle("night");
 
-});
+    const isNight =
+        document.body.classList.contains("night");
 
+    localStorage.setItem(
+        "moodgarden-night",
+        isNight
+    );
 
-document.getElementById("randomBtn").onclick = () => {
+    showToast(
+        isNight
+            ? "The garden is settling into night 🌙"
+            : "Good morning, little garden 🌞"
+    );
+}
 
-const random =
-buttons[Math.floor(Math.random() * buttons.length)];
+/* =========================================================
+   SCROLL
+========================================================= */
 
-setMood(random.dataset.mood);
+function scrollToSection(id) {
 
-};
+    document
+        .getElementById(id)
+        .scrollIntoView({
+            behavior: "smooth"
+        });
 
+}
 
-document.getElementById("saveBtn").onclick = () => {
+/* =========================================================
+   PARTICLES
+========================================================= */
 
-const current =
-document.querySelector(".mood.active").dataset.mood;
+function createParticles() {
 
-localStorage.setItem(
-"moodgarden_saved",
-current
+    const atmosphere =
+        document.querySelector(".atmosphere");
+
+    for (
+        let i = 0;
+        i < 35;
+        i++
+    ) {
+
+        const p =
+            document.createElement("div");
+
+        p.className = "particle";
+
+        p.style.left =
+            Math.random() * 100 + "%";
+
+        p.style.animationDuration =
+            8 + Math.random() * 15 + "s";
+
+        p.style.animationDelay =
+            Math.random() * 10 + "s";
+
+        p.style.opacity =
+            .2 + Math.random() * .6;
+
+        atmosphere.appendChild(p);
+
+    }
+}
+
+createParticles();
+
+/* =========================================================
+   RAIN VISUAL
+========================================================= */
+
+let rainInterval = null;
+
+function startRain() {
+
+    if (rainInterval) return;
+
+    rainInterval =
+        setInterval(() => {
+
+            const drop =
+                document.createElement(
+                    "div"
+                );
+
+            drop.className =
+                "rain-drop";
+
+            drop.style.left =
+                Math.random() * 100 + "vw";
+
+            drop.style.height =
+                10 + Math.random() * 25 + "px";
+
+            drop.style.animationDuration =
+                .5 + Math.random() * .5 + "s";
+
+            document.body.appendChild(drop);
+
+            setTimeout(
+                () => drop.remove(),
+                1500
+            );
+
+        }, 80);
+
+}
+
+function stopRain() {
+
+    clearInterval(rainInterval);
+
+    rainInterval = null;
+
+    document
+        .querySelectorAll(".rain-drop")
+        .forEach(drop => drop.remove());
+
+}
+
+/* =========================================================
+   AUDIO ENGINE
+========================================================= */
+
+let audioContext = null;
+
+let masterGain = null;
+
+const sounds = {};
+
+let masterVolume = .35;
+
+function initAudio() {
+
+    if (audioContext) {
+
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            audioContext.resume();
+
+        }
+
+        return;
+
+    }
+
+    audioContext =
+        new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    masterGain =
+        audioContext.createGain();
+
+    masterGain.gain.value =
+        masterVolume;
+
+    masterGain.connect(
+        audioContext.destination
+    );
+
+}
+
+/* =========================================================
+   AUDIO HELPERS
+========================================================= */
+
+function createNoiseBuffer() {
+
+    const bufferSize =
+        audioContext.sampleRate * 2;
+
+    const buffer =
+        audioContext.createBuffer(
+            1,
+            bufferSize,
+            audioContext.sampleRate
+        );
+
+    const data =
+        buffer.getChannelData(0);
+
+    for (
+        let i = 0;
+        i < bufferSize;
+        i++
+    ) {
+
+        data[i] =
+            Math.random() * 2 - 1;
+
+    }
+
+    return buffer;
+
+}
+
+function createNoise() {
+
+    const source =
+        audioContext.createBufferSource();
+
+    source.buffer =
+        createNoiseBuffer();
+
+    source.loop = true;
+
+    return source;
+
+}
+
+/* =========================================================
+   RAIN SOUND
+========================================================= */
+
+function createRainSound() {
+
+    const source =
+        createNoise();
+
+    const filter =
+        audioContext.createBiquadFilter();
+
+    filter.type =
+        "lowpass";
+
+    filter.frequency.value =
+        4500;
+
+    const gain =
+        audioContext.createGain();
+
+    gain.gain.value =
+        .13;
+
+    source
+        .connect(filter)
+        .connect(gain)
+        .connect(masterGain);
+
+    source.start();
+
+    return {
+        source,
+        gain
+    };
+}
+
+/* =========================================================
+   WATER SOUND
+========================================================= */
+
+function createWaterSound() {
+
+    const source =
+        createNoise();
+
+    const filter =
+        audioContext.createBiquadFilter();
+
+    filter.type =
+        "bandpass";
+
+    filter.frequency.value =
+        900;
+
+    filter.Q.value =
+        .7;
+
+    const gain =
+        audioContext.createGain();
+
+    gain.gain.value =
+        .09;
+
+    source
+        .connect(filter)
+        .connect(gain)
+        .connect(masterGain);
+
+    source.start();
+
+    return {
+        source,
+        gain
+    };
+}
+
+/* =========================================================
+   WIND SOUND
+========================================================= */
+
+function createWindSound() {
+
+    const source =
+        createNoise();
+
+    const filter =
+        audioContext.createBiquadFilter();
+
+    filter.type =
+        "lowpass";
+
+    filter.frequency.value =
+        500;
+
+    const gain =
+        audioContext.createGain();
+
+    gain.gain.value =
+        .12;
+
+    source
+        .connect(filter)
+        .connect(gain)
+        .connect(masterGain);
+
+    source.start();
+
+    return {
+        source,
+        gain
+    };
+}
+
+/* =========================================================
+   FIREPLACE SOUND
+========================================================= */
+
+function createFireSound() {
+
+    const source =
+        createNoise();
+
+    const filter =
+        audioContext.createBiquadFilter();
+
+    filter.type =
+        "lowpass";
+
+    filter.frequency.value =
+        1700;
+
+    const gain =
+        audioContext.createGain();
+
+    gain.gain.value =
+        .08;
+
+    source
+        .connect(filter)
+        .connect(gain)
+        .connect(masterGain);
+
+    source.start();
+
+    return {
+        source,
+        gain
+    };
+}
+
+/* =========================================================
+   BIRD SOUND
+========================================================= */
+
+function createBirdSound() {
+
+    const gain =
+        audioContext.createGain();
+
+    gain.gain.value =
+        0;
+
+    gain.connect(
+        masterGain
+    );
+
+    const birdLoop =
+        setInterval(() => {
+
+            if (
+                !sounds.birds ||
+                !sounds.birds.active
+            ) return;
+
+            const now =
+                audioContext.currentTime;
+
+            const osc =
+                audioContext.createOscillator();
+
+            const birdGain =
+                audioContext.createGain();
+
+            osc.type =
+                "sine";
+
+            const base =
+                1200 +
+                Math.random() * 700;
+
+            osc.frequency.setValueAtTime(
+                base,
+                now
+            );
+
+            osc.frequency.exponentialRampToValueAtTime(
+                base * 1.5,
+                now + .12
+            );
+
+            osc.frequency.exponentialRampToValueAtTime(
+                base * .8,
+                now + .25
+            );
+
+            birdGain.gain.setValueAtTime(
+                0,
+                now
+            );
+
+            birdGain.gain.linearRampToValueAtTime(
+                .025,
+                now + .04
+            );
+
+            birdGain.gain.exponentialRampToValueAtTime(
+                .001,
+                now + .3
+            );
+
+            osc.connect(
+                birdGain
+            );
+
+            birdGain.connect(
+                masterGain
+            );
+
+            osc.start(now);
+
+            osc.stop(
+                now + .35
+            );
+
+        }, 2600 + Math.random() * 3000);
+
+    return {
+        active: true,
+        birdLoop
+    };
+}
+
+/* =========================================================
+   TOGGLE SOUND
+========================================================= */
+
+function toggleSound(
+    type,
+    button
+) {
+
+    initAudio();
+
+    if (
+        sounds[type] &&
+        sounds[type].active
+    ) {
+
+        stopSound(type);
+
+        button.classList.remove(
+            "active"
+        );
+
+    } else {
+
+        startSound(type);
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+    updateSoundStatus();
+
+}
+
+/* =========================================================
+   START SOUND
+========================================================= */
+
+function startSound(type) {
+
+    initAudio();
+
+    let sound;
+
+    switch(type) {
+
+        case "rain":
+            sound =
+                createRainSound();
+            break;
+
+        case "water":
+            sound =
+                createWaterSound();
+            break;
+
+        case "wind":
+            sound =
+                createWindSound();
+            break;
+
+        case "birds":
+            sound =
+                createBirdSound();
+            break;
+
+        case "fire":
+            sound =
+                createFireSound();
+            break;
+
+    }
+
+    if (!sound) return;
+
+    sound.active = true;
+
+    sounds[type] =
+        sound;
+
+}
+
+/* =========================================================
+   STOP SOUND
+========================================================= */
+
+function stopSound(type) {
+
+    const sound =
+        sounds[type];
+
+    if (!sound) return;
+
+    sound.active = false;
+
+    if (
+        sound.source
+    ) {
+
+        try {
+
+            sound.source.stop();
+
+        } catch(e) {}
+
+    }
+
+    if (
+        sound.birdLoop
+    ) {
+
+        clearInterval(
+            sound.birdLoop
+        );
+
+    }
+
+    delete sounds[type];
+
+}
+
+/* =========================================================
+   MASTER VOLUME
+========================================================= */
+
+function setMasterVolume(value) {
+
+    masterVolume =
+        Number(value);
+
+    if (masterGain) {
+
+        masterGain.gain.setTargetAtTime(
+            masterVolume,
+            audioContext.currentTime,
+            .05
+        );
+
+    }
+
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function updateSoundStatus() {
+
+    const active =
+        Object.keys(sounds);
+
+    const status =
+        document.getElementById(
+            "soundStatus"
+        );
+
+    if (!active.length) {
+
+        status.textContent =
+            "🔇 Sounds off";
+
+        return;
+
+    }
+
+    status.textContent =
+        "🎧 " +
+        active.length +
+        " ambience" +
+        (active.length > 1 ? "s" : "") +
+        " playing";
+
+}
+
+/* =========================================================
+   BREATHING
+========================================================= */
+
+let breathingTimer = null;
+
+function startBreathing() {
+
+    const circle =
+        document.getElementById(
+            "breathCircle"
+        );
+
+    const text =
+        document.getElementById(
+            "breathText"
+        );
+
+    circle.classList.add(
+        "breathing"
+    );
+
+    let phase = 0;
+
+    clearInterval(
+        breathingTimer
+    );
+
+    function update() {
+
+        if (phase === 0) {
+
+            text.textContent =
+                "🌿 Slowly breathe in...";
+
+        }
+
+        if (phase === 1) {
+
+            text.textContent =
+                "✨ Hold gently...";
+
+        }
+
+        if (phase === 2) {
+
+            text.textContent =
+                "🌬️ Slowly breathe out...";
+
+        }
+
+        if (phase === 3) {
+
+            text.textContent =
+                "🫧 Rest for a moment...";
+
+        }
+
+        phase =
+            (phase + 1) % 4;
+
+    }
+
+    update();
+
+    breathingTimer =
+        setInterval(
+            update,
+            4000
+        );
+
+    showToast(
+        "Stay here. Breathe slowly. 🫧"
+    );
+
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    toast.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        }, 2500);
+
+}
+
+/* =========================================================
+   MOUSE PARALLAX
+========================================================= */
+
+const garden =
+    document.querySelector(
+        ".garden-card"
+    );
+
+garden.addEventListener(
+    "mousemove",
+    event => {
+
+        const rect =
+            garden.getBoundingClientRect();
+
+        const x =
+            (event.clientX - rect.left)
+            / rect.width
+            - .5;
+
+        const y =
+            (event.clientY - rect.top)
+            / rect.height
+            - .5;
+
+        const mountains =
+            document.querySelectorAll(
+                ".mountain"
+            );
+
+        mountains.forEach(
+            (mountain, index) => {
+
+                const amount =
+                    index === 0
+                        ? 12
+                        : -12;
+
+                mountain.style.transform =
+                    `translate(${x * amount}px, ${y * amount}px)`;
+
+            }
+        );
+
+    }
 );
 
-document.getElementById("saved").textContent =
-"✓ Today's garden saved";
+garden.addEventListener(
+    "mouseleave",
+    () => {
 
-setTimeout(() => {
+        document
+            .querySelectorAll(
+                ".mountain"
+            )
+            .forEach(
+                mountain => {
 
-document.getElementById("saved").textContent =
-"Your garden is growing";
+                    mountain.style.transform =
+                        "";
 
-}, 1600);
+                }
+            );
 
-};
+    }
+);
 
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
-setMood(
-localStorage.getItem("moodgarden") || "happy"
+function initialize() {
+
+    const savedMood =
+        localStorage.getItem(
+            "moodgarden-last-mood"
+        );
+
+    if (savedMood) {
+
+        selectMood(
+            savedMood
+        );
+
+    }
+
+    const savedNight =
+        localStorage.getItem(
+            "moodgarden-night"
+        );
+
+    if (
+        savedNight === "true"
+    ) {
+
+        document.body.classList.add(
+            "night"
+        );
+
+    }
+
+}
+
+initialize();
+
+/* =========================================================
+   FIRST INTERACTION
+   Browser autoplay policies require user interaction
+   before WebAudio can start.
+========================================================= */
+
+document.addEventListener(
+    "click",
+    () => {
+
+        if (audioContext) {
+
+            audioContext.resume();
+
+        }
+
+    },
+    {
+        once: true
+    }
 );
 
 </script>
 
 </body>
 </html>
+```
